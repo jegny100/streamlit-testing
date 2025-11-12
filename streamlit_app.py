@@ -478,6 +478,6 @@ def run_dynamic_ahp(json_path: str, data_path: str, country_json_path: str) -> N
 if __name__ == "__main__":
     # Note: Labels for categories and criteria come from the JSON file
     json_path = "ahp_criteria_structure_v3.json"  # hierarchy JSON
-    data_path = "processed_data/combined_wide_CLEAN.xlsx"  # country indicators
+    data_path = "combined_wide_CLEAN.xlsx"  # country indicators
     country_json_path = "country_codes_names.json"  # ISO-3 --> country name mapping
     run_dynamic_ahp(json_path, data_path, country_json_path)
