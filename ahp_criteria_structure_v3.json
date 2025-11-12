@@ -1,0 +1,100 @@
+{
+  "levels": [
+    {
+      "id": "top",
+      "label": "Sustainability Pillars",
+      "elements": ["environmental", "economic", "social"]
+    },
+    {
+      "id": "environmental",
+      "label": "Environmental",
+      "elements": [
+        {
+          "label": "Environmental Performance",
+          "code": "environmental_performance"
+        },
+        {
+          "label": "Renewable Energy Production",
+          "code": "renewable_energy_production"
+        },
+        {
+          "label": "Recycling of material, energy, and waste",
+          "code": "recycling_material_energy_waste"
+        },
+        {
+          "label": "Waste Recovery Rate",
+          "code": "waste_recovery_rate"
+        }
+
+      ]
+    },
+    {
+      "id": "economic",
+      "label": "Economic",
+      "elements": [
+        {
+          "label": "Labor cost",
+          "code": "labor_cost"
+        },
+        {
+          "label": "Trade and tariff barriers",
+          "code": "trade_tariff_barriers"
+        },
+        {
+          "label": "Energy cost",
+          "code": "energy_cost"
+        },
+        {
+          "label": "Logistics cost",
+          "code": "logistics_cost"
+        },
+        {
+          "label": "International markets",
+          "code": "international_markets"
+        },
+        {
+          "label": "Favourable tax",
+          "code": "favourable_tax"
+        },
+        {
+          "label": "Exchange rate",
+          "code": "exchange_rate"
+        },
+        {
+          "label": "Fluctuations",
+          "code": "inflation_consumer_prices"
+        },
+        {
+          "label": "Potential high quality suppliers",
+          "code": "potential_high_quality_suppliers"
+        },
+        {
+          "label": "Industry growth",
+          "code": "industry_growth"
+        }
+      ]
+    },
+    {
+      "id": "social",
+      "label": "Social",
+      "elements": [
+        {
+          "label": "Political stability",
+          "code": "political_stability"
+        },
+        {
+          "label": "Corruption",
+          "code": "corruption"
+        },
+        {
+          "label": "Educational Index",
+          "code": "educational_index"
+        },
+        {
+          "label": "Human rights",
+          "code": "human_rights"
+        }
+      ]
+    }
+  ]
+}
