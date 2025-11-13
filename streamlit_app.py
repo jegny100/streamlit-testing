@@ -118,28 +118,37 @@ def plot_horizontal_stacked(df: pd.DataFrame, label_col: str, value_col: str, ti
 
 
 def plot_pie(df: pd.DataFrame, label_col: str, value_col: str, title: str) -> None:
-    """Renders a compact pie chart using Plotly."""
-    fig = go.Figure(
-        go.Pie(
-            labels=df[label_col],
-            values=df[value_col],
-            textinfo="label+percent",
-            hoverinfo="label+value+percent",
-            marker=dict(
-                colors=["#74c69d", "#4ea8de", "#f6bd60", "#f28482", "#9d4edd", "#00b4d8", "#6c757d"]
-            ),
-        )
-    )
+    labels = df[label_col].tolist()
+    values = df[value_col].tolist()
+
+    custom_text = [
+        f"{l}: {v*100:.1f}%" if v > 0 else ""
+        for l, v in zip(labels, values)
+    ]
+
+    fig = go.Figure(go.Pie(
+        labels=labels,
+        values=values,
+        text=custom_text,
+        textinfo="text",
+        textposition="outside",
+        hoverinfo="skip",
+        marker_colors=[
+            "#74c69d", "#4ea8de", "#f6bd60",
+            "#f28482", "#9d4edd", "#00b4d8", "#6c757d"
+        ]
+    ))
 
     fig.update_layout(
         title=title,
-        height=250,
-        margin=dict(l=0, r=0, t=30, b=0),
-        showlegend=False,
+        height=320,
+        margin=dict(t=60, b=40),
+        showlegend=True,
     )
-    fig.update_traces(textposition="outside")
 
-    st.plotly_chart(fig, use_container_width=True, config={"staticPlot": True})
+    st.plotly_chart(fig, use_container_width=True, config={"displayModeBar": False})
+
+
 
 
 def get_user_weights(hierarchy: Dict[str, Any], df: pd.DataFrame) -> Dict[str, Dict[str, float]]:
@@ -180,7 +189,7 @@ def get_user_weights(hierarchy: Dict[str, Any], df: pd.DataFrame) -> Dict[str, D
 
     # Charts
     plot_pie(pillar_df, "Category", "Weight", "Distribution of main categories")
-    plot_horizontal_stacked(pillar_df, "Category", "Weight", "Distribution of main categories")
+    #plot_horizontal_stacked(pillar_df, "Category", "Weight", "Distribution of main categories")
 
     st.markdown("---")
     st.header("Weights within each category")
