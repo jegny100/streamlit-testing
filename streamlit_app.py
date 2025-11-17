@@ -302,6 +302,11 @@ def run_dynamic_ahp(json_path: str, data_path: str, country_json_path: str) -> N
 
     df = load_dataframe(data_path)
 
+    # TODO Build filter feature to select criterions
+    # filter ALL rows with NaN values
+    df = df.dropna(subset=[c for c in df.columns if c != 'country_code'])
+
+
     st.sidebar.header("Data Overview")
     st.sidebar.write(f"Countries: {df.shape[0] if df is not None else 0}")
     #st.sidebar.write(f"Criteria: {[c for c in df.columns if c != 'country_code']}" if df is not None else "Criteria: []")
@@ -338,7 +343,6 @@ def run_dynamic_ahp(json_path: str, data_path: str, country_json_path: str) -> N
         for code, w in global_weights.items()
     ]
     gw_df = pd.DataFrame(gw_items).sort_values("Global Weight", ascending=False).reset_index(drop=True)
-    # st.dataframe(gw_df, hide_index=True, use_container_width=True)
 
     # Compact horizontal bar chart for quick visual comparison
     if not gw_df.empty:
@@ -363,7 +367,7 @@ def run_dynamic_ahp(json_path: str, data_path: str, country_json_path: str) -> N
             margin=dict(l=0, r=0, t=30, b=0),
             height=min(420, 28 * len(gw_df) + 80),
         )
-        st.plotly_chart(fig, use_container_width=True, config={"staticPlot": True})
+        st.plotly_chart(fig, width='stretch', config={"staticPlot": True})
 
     # --  Ranking Table --
     ranking = compute_country_scores(df, global_weights, country_json_path)
@@ -376,7 +380,7 @@ def run_dynamic_ahp(json_path: str, data_path: str, country_json_path: str) -> N
     st.dataframe(
         ranking,
         hide_index=True,
-        use_container_width=True,
+        width='stretch',
         column_order=display_cols,
         column_config={
             "country_name": st.column_config.TextColumn("Country"),
