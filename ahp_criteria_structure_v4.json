@@ -1,0 +1,101 @@
+{
+  "top": {
+    "label": "Sustainability Pillars",
+    "sublevels": [
+      "environmental",
+      "economic",
+      "social"
+    ]
+  },
+  "environmental": {
+    "label": "Environmental",
+    "criteria": [
+      {
+        "label": "Environmental Performance",
+        "code": "environmental_performance"
+      },
+      {
+        "label": "Renewable Energy Production",
+        "code": "renewable_energy_production"
+      },
+      {
+        "label": "Recycling of material, energy, and waste",
+        "code": "recycling_material_energy_waste"
+      },
+      {
+        "label": "Waste Recovery Rate",
+        "code": "waste_recovery_rate"
+      }
+    ]
+  },
+  "economic": {
+    "label": "Economic",
+    "criteria": [
+      {
+        "label": "Labor cost",
+        "code": "labor_cost"
+      },
+      {
+        "label": "Trade Freedom",
+        "code": "trade freedom"
+      },
+      {
+        "label": "Electricity Affordability",
+        "code": "energy_cost"
+      },
+      {
+        "label": "Logistics cost",
+        "code": "logistics_cost"
+      },
+      {
+        "label": "International markets",
+        "code": "international_markets"
+      },
+      {
+        "label": "Favourable tax",
+        "code": "tax burden"
+      },
+      {
+        "label": "Exchange rate",
+        "code": "exchange_rate"
+      },
+      {
+        "label": "Fluctuations",
+        "code": "fluctuations"
+      },
+      {
+        "label": "Potential high quality suppliers",
+        "code": "potential_high_quality_suppliers"
+      },
+      {
+        "label": "Industry growth",
+        "code": "GDP"
+      }
+    ]
+  },
+  "social": {
+    "label": "Social",
+    "criteria": [
+      {
+        "label": "Political stability",
+        "code": "political_stability"
+      },
+      {
+        "label": "Absence of Corruption",
+        "code": "corruption"
+      },
+      {
+        "label": "Educational Index",
+        "code": "educational_index"
+      },
+      {
+        "label": "Human rights",
+        "code": "human_rights"
+      },
+      {
+        "label": "Government integrity",
+        "code": "government integrity"
+      }
+    ]
+  }
+}

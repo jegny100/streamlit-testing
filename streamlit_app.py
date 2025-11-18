@@ -31,64 +31,6 @@ def load_hierarchy(json_path: str) -> Dict[str, Any]:
         st.error(f"Hierarchy JSON parse error: {e}")
     return {"levels": []}
 
-
-def parse_ahp_structure(json_path: str) -> Dict[str, Any]:
-    """Parse the AHP hierarchy JSON into a convenient dict structure.
-
-    Expected JSON format (simplified):
-    {
-      "levels": [
-        {"id": "top", "label": "...", "elements": ["environmental", ...]},
-        {"id": "environmental", "label": "...", "elements": [{"label": "...", "code": "..."}, ...]},
-        ...
-      ]
-    }
-
-    Returns a dict like:
-    {
-      "top": {"label": str, "sublevels": [str, ...]},
-      "environmental": {"label": str, "criteria": [{"label": str, "code": str}, ...]},
-      ...
-    }
-    """
-    data = load_hierarchy(json_path)
-
-    if "levels" not in data or not isinstance(data["levels"], list):
-        st.error("Hierarchy JSON is missing a valid 'levels' list.")
-        return {}
-
-    hierarchy: Dict[str, Any] = {}
-    for level in data["levels"]:
-        # Validate level structure
-        if not all(k in level for k in ("id", "label", "elements")):
-            st.warning(f"Skipping malformed level: {level}")
-            continue
-
-        elements = level["elements"]
-        if not isinstance(elements, list) or len(elements) == 0:
-            st.warning(f"Level '{level['id']}' has no elements; skipping.")
-            continue
-
-        # If first element is a dict, treat as criteria; otherwise as sublevels
-        if isinstance(elements[0], dict):
-            criteria = []
-            for e in elements:
-                if not all(k in e for k in ("label", "code")):
-                    st.warning(f"Skipping malformed criterion in '{level['id']}': {e}")
-                    continue
-                criteria.append({"label": e["label"], "code": e["code"]})
-            hierarchy[level["id"]] = {"label": level["label"], "criteria": criteria}
-        else:
-            hierarchy[level["id"]] = {"label": level["label"], "sublevels": elements}
-
-    # Basic presence check for top level
-    if "top" not in hierarchy or "sublevels" not in hierarchy.get("top", {}):
-        st.error("Hierarchy JSON must define a 'top' level with 'sublevels'.")
-        return {}
-
-    return hierarchy
-
-
 # ------------------------------
 # 2) Streamlit UI: Weight selection
 # ------------------------------
@@ -280,10 +222,7 @@ def run_dynamic_ahp(json_path: str, data_path: str, country_json_path: str) -> N
     st.title("Location Selection Tool")
 
     # Read JSON structure & data
-    hierarchy = parse_ahp_structure(json_path)
-    if not hierarchy:
-        st.stop()
-
+    hierarchy = load_hierarchy(json_path)
     df = load_dataframe(data_path)
 
     # TODO Build filter feature to select criterions
@@ -385,7 +324,7 @@ def run_dynamic_ahp(json_path: str, data_path: str, country_json_path: str) -> N
 # ------------------------------
 if __name__ == "__main__":
     # Note: Labels for categories and criteria come from the JSON file
-    json_path = "ahp_criteria_structure_v3.json"  # hierarchy JSON
+    json_path = "ahp_criteria_structure_v4.json"  # hierarchy JSON
     data_path = "combined_wide_CLEAN.xlsx"  # country indicators
     country_json_path = "country_codes_names.json"  # ISO-3 --> country name mapping
     run_dynamic_ahp(json_path, data_path, country_json_path)
