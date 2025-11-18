@@ -144,15 +144,6 @@ def get_user_weights(hierarchy: Dict[str, Any], df: pd.DataFrame) -> Dict[str, D
         available_codes = set(df.columns) - {"country_code"} if df is not None else set()
         criteria = [c for c in all_criteria if c.get("code") in available_codes]
 
-    
-        # missing = [c for c in all_criteria if c.get("code") not in available_codes]
-        # if missing:
-        #     st.caption("Ignoring criteria not found in data: " + ", ".join([c.get("code", "?") for c in missing]))
-        # if not criteria:
-        #     st.info("No criteria available in data for this category.")
-        #     continue
-
-
         equal = 1.0 / len(criteria)
         total_sub = 0.0
         for crit in criteria:
@@ -282,13 +273,6 @@ def compute_country_scores(
     ]
     return merged
 
-
-# ------------------------------
-# 4b) Render world map (choropleth)
-# ------------------------------
-
-
-
 # ------------------------------
 # 5) Streamlit app entry
 # ------------------------------
@@ -388,6 +372,9 @@ def run_dynamic_ahp(json_path: str, data_path: str, country_json_path: str) -> N
             "AHP_Score": st.column_config.NumberColumn("AHP Score", format="%.3f"),
         },
     )
+
+    # --  World Map --
+
     st.markdown("---")
     st.subheader("World map: Country Scores")
     render_world_map(ranking)
