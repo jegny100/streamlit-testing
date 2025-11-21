@@ -41,7 +41,7 @@
       },
       {
         "label": "Electricity Affordability",
-        "code": "energy_cost"
+        "code": "electricity price"
       },
       {
         "label": "Logistics cost",

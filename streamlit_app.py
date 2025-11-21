@@ -8,6 +8,7 @@ import streamlit as st
 
 #from hierarchy import parse_ahp_structure
 from charts import plot_pie, plot_horizontal_stacked, render_world_map
+from filter_functions import select_and_filter_criteria
 #from weights import get_user_weights
 #from scoring import compute_global_weights, compute_country_scores
 
@@ -225,16 +226,21 @@ def run_dynamic_ahp(json_path: str, data_path: str, country_json_path: str) -> N
     hierarchy = load_hierarchy(json_path)
     df = load_dataframe(data_path)
 
-    # TODO Build filter feature to select criterions
-    # filter ALL rows with NaN values
-    df = df.dropna(subset=[c for c in df.columns if c != 'country_code'])
+
+    # Trigger zum Öffnen des Kriteriendialogs (nur Button-UI!)
+    if st.sidebar.button("Select criteria", key="open_criteria_modal"):
+        st.session_state["show_criteria_modal"] = True
+
+    # --- Criteria selection and filtering ---
+    selected_codes, df = select_and_filter_criteria(df, hierarchy)
 
 
     st.sidebar.header("Data Overview")
+    df = df.dropna(subset=[c for c in df.columns if c != 'country_code'])
     st.sidebar.write(f"Countries: {df.shape[0] if df is not None else 0}")
-    #st.sidebar.write(f"Criteria: {[c for c in df.columns if c != 'country_code']}" if df is not None else "Criteria: []")
-    st.sidebar.write(f"Criteria: {df.shape[1]}")
-    
+    st.sidebar.write(f"Criteria: {len(selected_codes)}")
+
+
 
     # Weights (filtered to only criteria present in the dataset)
     weights = get_user_weights(hierarchy, df)
