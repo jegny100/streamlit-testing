@@ -76,10 +76,29 @@ def select_and_filter_criteria(
 
         col_apply, col_cancel = st.columns([1, 1])
         if col_apply.button("Apply", key="apply_criteria"):
-            for code in default_selection:
-                st.session_state["selected_criteria"][code] = st.session_state.get(f"sel_{code}", True)
-            st.session_state["show_criteria_modal"] = False
-            st.rerun()
+            # --- Validation: At least one selected per category ---
+            missing_pillars = []
+            for pillar in pillars:
+                criteria_codes = [c["code"] for c in pillar_to_criteria.get(pillar, [])]
+                selected_in_pillar = [
+                    code for code in criteria_codes 
+                    if st.session_state.get(f"sel_{code}", False)
+                ]
+                if not selected_in_pillar:
+                    missing_pillars.append(hierarchy.get(pillar, {}).get("label", pillar))
+
+            if missing_pillars:
+                st.error(
+                    "You must select at least one criterion in each category.\n\n"
+                    + "Missing: " + ", ".join(missing_pillars)
+                )
+                st.stop()  # Prevent Apply and rerun
+            else:
+                # --- Valid selection: Commit it ---
+                for code in default_selection:
+                    st.session_state["selected_criteria"][code] = st.session_state.get(f"sel_{code}", False)
+                st.session_state["show_criteria_modal"] = False
+                st.rerun()
 
         if col_cancel.button("Cancel", key="cancel_criteria"):
             st.session_state["show_criteria_modal"] = False
@@ -101,5 +120,7 @@ def select_and_filter_criteria(
 
     if selected_codes:
         df_filtered = df_filtered.dropna(subset=selected_codes)
+
+    
 
     return selected_codes, df_filtered

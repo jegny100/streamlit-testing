@@ -4,7 +4,17 @@
     "sublevels": [
       "environmental",
       "economic",
-      "social"
+      "social",
+      "hydrogen"
+    ]
+  },
+  "hydrogen": {
+    "label": "Hydrogen",
+    "criteria": [
+      {
+        "label": "Renewable Energy Policy Readiness",
+        "code": "renewable energy readiness"
+      }
     ]
   },
   "environmental": {
