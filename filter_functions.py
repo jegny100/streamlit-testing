@@ -2,6 +2,27 @@ from typing import List, Tuple, Dict, Any, Set
 import streamlit as st
 import pandas as pd
 
+
+def format_criterion_help(criterion: Dict[str, Any]) -> str:
+    # Formats the help text for a given criterion.
+    label = criterion.get("label", criterion.get("code", ""))
+    description = criterion.get("description", "No description available.")
+    year = criterion.get("year")
+    source = criterion.get("source_short")
+
+    lines = [
+        f"**Criterion**: {label}",
+        f"**Description**: {description}",
+    ]
+    if year is not None:
+        lines.append(f"**Year**: {year}")
+    if source:
+        lines.append(f"**Source**: {source}")
+
+    return "  \n".join(lines)
+
+
+
 def select_and_filter_criteria(
     df_raw: pd.DataFrame,
     hierarchy: Dict[str, Any]
@@ -57,7 +78,8 @@ def select_and_filter_criteria(
             for criterion in criteria:
                 code = criterion["code"]
                 label = criterion.get("label", code)
-                desc = criterion.get("description", "") or label
+                #desc = criterion.get("description", "") or label
+                desc = format_criterion_help(criterion)
 
                 combined = current_selected | {code}
                 valid_sets = [code_to_valid_rows[c] for c in combined if c in code_to_valid_rows]

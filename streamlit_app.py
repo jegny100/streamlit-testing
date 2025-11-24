@@ -8,7 +8,7 @@ import streamlit as st
 
 #from hierarchy import parse_ahp_structure
 from charts import plot_pie, plot_horizontal_stacked, render_world_map
-from filter_functions import select_and_filter_criteria
+from filter_functions import select_and_filter_criteria, format_criterion_help
 #from weights import get_user_weights
 #from scoring import compute_global_weights, compute_country_scores
 
@@ -92,7 +92,18 @@ def get_user_weights(hierarchy: Dict[str, Any], df: pd.DataFrame) -> Dict[str, D
         for crit in criteria:
             code = crit["code"]
             default = float(equal)
-            val = st.slider(f"{crit['label']}", 0.0, 1.0, default, 0.01, key=f"w_{sub}_{code}")
+            help_text = format_criterion_help(crit)
+
+            val = st.slider(
+                label=crit["label"],
+                min_value=0.0,
+                max_value=1.0,
+                value=default,
+                step=0.01,
+                key=f"w_{sub}_{code}",
+                help=help_text,
+            )
+
             weights[sub][code] = float(val)
             total_sub += float(val)
 
