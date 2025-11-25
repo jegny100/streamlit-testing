@@ -8,17 +8,20 @@ import streamlit as st
 from charts import plot_pie, render_world_map
 from filter_functions import select_and_filter_criteria, format_criterion_help
 
+st.set_page_config(
+    page_title="Location Tool", 
+    page_icon="📍",
+    layout="centered", 
+    initial_sidebar_state="expanded"
+
+)
 
 # ------------------------------
 # 1) Load and parse AHP hierarchy
 # ------------------------------
 @st.cache_data(show_spinner=False)
 def load_hierarchy(json_path: str) -> Dict[str, Any]:
-    """Load the hierarchy JSON file.
-
-    Returns the raw JSON as a dict. Errors are surfaced in Streamlit and an
-    empty structure is returned to allow the app to continue gracefully.
-    """
+    """Load the hierarchy JSON file. """
     try:
         with open(json_path, "r", encoding="utf-8") as f:
             return json.load(f)
@@ -42,6 +45,7 @@ def get_user_weights(hierarchy: Dict[str, Any], df: pd.DataFrame) -> Dict[str, D
     weights: Dict[str, Dict[str, float]] = {}
 
     st.header("Rating of the main categories")
+    st.write("Please assign weights to the main categories below. These weights determine the overall importance of each category in the final ranking.")
     top_sublevels: List[str] = hierarchy["top"]["sublevels"]
 
     # --- Main categories ---
@@ -74,6 +78,7 @@ def get_user_weights(hierarchy: Dict[str, Any], df: pd.DataFrame) -> Dict[str, D
 
     st.markdown("---")
     st.header("Weights within each category")
+    st.write("Now, please assign weights to the individual indicators within each category. These weights determine the relative importance of each indicator within its category.")   
 
     # --- Criteria within each category ---
     for sub in top_sublevels:
@@ -233,20 +238,23 @@ def run_dynamic_ahp(json_path: str, data_path: str, country_json_path: str) -> N
     hierarchy = load_hierarchy(json_path)
     df = load_dataframe(data_path)
 
-    st.sidebar.header("Change the tool settings")
+    st.sidebar.subheader("Change the tool settings")
     # Trigger zum Öffnen des Kriteriendialogs (nur Button-UI!)
     if st.sidebar.button("Select criteria", key="open_criteria_modal"):
         st.session_state["show_criteria_modal"] = True
+
+    if st.sidebar.button("Select countries", key="open_countries_modal"):
+        st.session_state["show_countries_modal"] = True
 
     # --- Criteria selection and filtering ---
     selected_codes, df = select_and_filter_criteria(df, hierarchy)
 
     st.sidebar.markdown("---")
 
-    st.sidebar.header("Data Overview")
+    st.sidebar.subheader("Data Overview")
     df = df.dropna(subset=[c for c in df.columns if c != 'country_code'])
-    st.sidebar.write(f"Countries: {df.shape[0] if df is not None else 0}")
-    st.sidebar.write(f"Criteria: {len(selected_codes)}")
+    st.sidebar.write(f"Total Countries: {df.shape[0] if df is not None else 0}")
+    st.sidebar.write(f"Total Criteria: {len(selected_codes)}")
 
 
 
