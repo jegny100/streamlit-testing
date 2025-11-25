@@ -146,3 +146,155 @@ def select_and_filter_criteria(
     
 
     return selected_codes, df_filtered
+
+
+def select_and_filter_countries(
+    df_raw: pd.DataFrame,
+    countries_lookup: pd.DataFrame,
+) -> Tuple[List[str], pd.DataFrame]:
+    """
+    Allows the user to pick countries by region or individually and returns the filtered DataFrame.
+    The selection is persisted in session state under 'selected_countries'.
+    """
+    if df_raw is None or df_raw.empty:
+        return [], df_raw
+
+    if "country_code" not in df_raw.columns:
+        st.warning("Input data is missing the 'country_code' column.")
+        return [], df_raw
+
+    available_codes = [
+        str(code) for code in df_raw["country_code"].dropna().astype(str).unique().tolist()
+    ]
+
+    if countries_lookup is None or countries_lookup.empty:
+        lookup_df = pd.DataFrame(
+            {
+                "country_code": available_codes,
+                "country_name": available_codes,
+                "region": ["Other"] * len(available_codes),
+            }
+        )
+    else:
+        lookup_df = countries_lookup.copy()
+        if "region" not in lookup_df.columns:
+            lookup_df["region"] = "Other"
+
+        lookup_df["country_code"] = lookup_df["country_code"].astype(str)
+        lookup_df = lookup_df[lookup_df["country_code"].isin(available_codes)]
+
+    known_codes = set(lookup_df["country_code"])
+    missing_codes = [code for code in available_codes if code not in known_codes]
+    if missing_codes:
+        lookup_df = pd.concat(
+            [
+                lookup_df,
+                pd.DataFrame(
+                    {
+                        "country_code": missing_codes,
+                        "country_name": missing_codes,
+                        "region": ["Other"] * len(missing_codes),
+                    }
+                ),
+            ],
+            ignore_index=True,
+        )
+
+    region_to_countries: Dict[str, List[Dict[str, str]]] = {}
+    for region, subset in lookup_df.groupby("region"):
+        sorted_subset = subset.sort_values("country_name")
+        region_to_countries[region] = sorted_subset.to_dict("records")
+
+    if "selected_countries" not in st.session_state:
+        st.session_state["selected_countries"] = {
+            code: True for code in available_codes
+        }
+
+    if "show_countries_modal" not in st.session_state:
+        st.session_state["show_countries_modal"] = False
+
+    @st.dialog("Select countries")
+    def _countries_dialog() -> None:
+        st.caption("Filter the dataset by selecting regions or individual countries.")
+
+        col_all_a, col_all_b = st.columns(2)
+        if col_all_a.button("Select All Countries", key="countries_select_all"):
+            for code in available_codes:
+                st.session_state[f"country_sel_{code}"] = True
+        if col_all_b.button("Deselect All Countries", key="countries_deselect_all"):
+            for code in available_codes:
+                st.session_state[f"country_sel_{code}"] = False
+
+        sorted_regions = sorted(region_to_countries.keys())
+        for region in sorted_regions:
+            countries = region_to_countries.get(region, [])
+            region_codes = [c["country_code"] for c in countries]
+            region_key = f"region_sel_{region}"
+
+            for code in region_codes:
+                country_key = f"country_sel_{code}"
+                if country_key not in st.session_state:
+                    st.session_state[country_key] = st.session_state["selected_countries"].get(code, True)
+
+            current_region_selected = all(
+                st.session_state.get(f"country_sel_{code}", True) for code in region_codes
+            )
+
+            if region_key not in st.session_state:
+                st.session_state[region_key] = current_region_selected
+
+            expander_label = f"{region} ({sum(st.session_state.get(f'country_sel_{c}', True) for c in region_codes)}/{len(region_codes)})"
+            with st.expander(expander_label, expanded=False):
+                region_checked = st.checkbox(
+                    "Select entire region",
+                    key=region_key,
+                    value=current_region_selected,
+                )
+
+                if region_checked != current_region_selected:
+                    for code in region_codes:
+                        st.session_state[f"country_sel_{code}"] = region_checked
+                    current_region_selected = region_checked
+
+                for country in countries:
+                    code = country["country_code"]
+                    name = country.get("country_name", code)
+                    country_key = f"country_sel_{code}"
+                    st.checkbox(
+                        f"{name} ({code})",
+                        key=country_key,
+                    )
+
+                st.session_state[region_key] = all(
+                    st.session_state.get(f"country_sel_{code}", False)
+                    for code in region_codes
+                )
+
+        col_apply, col_cancel = st.columns([1, 1])
+        if col_apply.button("Apply", key="apply_countries"):
+            for code in available_codes:
+                st.session_state["selected_countries"][code] = st.session_state.get(f"country_sel_{code}", True)
+            st.session_state["show_countries_modal"] = False
+            st.rerun()
+
+        if col_cancel.button("Cancel", key="cancel_countries"):
+            for code, selected in st.session_state["selected_countries"].items():
+                st.session_state[f"country_sel_{code}"] = selected
+            st.session_state["show_countries_modal"] = False
+            st.rerun()
+
+    if st.session_state["show_countries_modal"]:
+        _countries_dialog()
+
+    selected_countries = [
+        code for code, on in st.session_state["selected_countries"].items()
+        if on and code in available_codes
+    ]
+
+    if not selected_countries:
+        selected_countries = sorted(available_codes)
+
+    country_codes_series = df_raw["country_code"].astype(str)
+    df_filtered = df_raw[country_codes_series.isin(selected_countries)].copy()
+
+    return selected_countries, df_filtered

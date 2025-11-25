@@ -6,7 +6,11 @@ import plotly.express as px
 import streamlit as st
 
 from charts import plot_pie, render_world_map
-from filter_functions import select_and_filter_criteria, format_criterion_help
+from filter_functions import (
+    select_and_filter_criteria,
+    format_criterion_help,
+    select_and_filter_countries,
+)
 
 st.set_page_config(
     page_title="Location Tool", 
@@ -236,6 +240,7 @@ def run_dynamic_ahp(json_path: str, data_path: str, country_json_path: str) -> N
 
     # Read JSON structure & data
     hierarchy = load_hierarchy(json_path)
+    countries_df = load_countries_lookup(country_json_path)
     df = load_dataframe(data_path)
 
     st.sidebar.subheader("Change the tool settings")
@@ -246,6 +251,9 @@ def run_dynamic_ahp(json_path: str, data_path: str, country_json_path: str) -> N
     if st.sidebar.button("Select countries", key="open_countries_modal"):
         st.session_state["show_countries_modal"] = True
 
+    # --- Country selection and filtering ---
+    selected_countries, df = select_and_filter_countries(df, countries_df)
+
     # --- Criteria selection and filtering ---
     selected_codes, df = select_and_filter_criteria(df, hierarchy)
 
@@ -253,7 +261,8 @@ def run_dynamic_ahp(json_path: str, data_path: str, country_json_path: str) -> N
 
     st.sidebar.subheader("Data Overview")
     df = df.dropna(subset=[c for c in df.columns if c != 'country_code'])
-    st.sidebar.write(f"Total Countries: {df.shape[0] if df is not None else 0}")
+    st.sidebar.write(f"Selected Countries: {len(selected_countries)}")
+    st.sidebar.write(f"Countries with data: {df.shape[0] if df is not None else 0}")
     st.sidebar.write(f"Total Criteria: {len(selected_codes)}")
 
 
