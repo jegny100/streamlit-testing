@@ -1,22 +1,18 @@
 import json
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 import pandas as pd
 import plotly.express as px
-import plotly.graph_objects as go
 import streamlit as st
 
-#from hierarchy import parse_ahp_structure
-from charts import plot_pie, plot_horizontal_stacked, render_world_map
+from charts import plot_pie, render_world_map
 from filter_functions import select_and_filter_criteria, format_criterion_help
-#from weights import get_user_weights
-#from scoring import compute_global_weights, compute_country_scores
 
 
 # ------------------------------
 # 1) Load and parse AHP hierarchy
 # ------------------------------
-#@st.cache_data(show_spinner=False)
+@st.cache_data(show_spinner=False)
 def load_hierarchy(json_path: str) -> Dict[str, Any]:
     """Load the hierarchy JSON file.
 
@@ -237,7 +233,7 @@ def run_dynamic_ahp(json_path: str, data_path: str, country_json_path: str) -> N
     hierarchy = load_hierarchy(json_path)
     df = load_dataframe(data_path)
 
-
+    st.sidebar.header("Change the tool settings")
     # Trigger zum Öffnen des Kriteriendialogs (nur Button-UI!)
     if st.sidebar.button("Select criteria", key="open_criteria_modal"):
         st.session_state["show_criteria_modal"] = True
@@ -245,6 +241,7 @@ def run_dynamic_ahp(json_path: str, data_path: str, country_json_path: str) -> N
     # --- Criteria selection and filtering ---
     selected_codes, df = select_and_filter_criteria(df, hierarchy)
 
+    st.sidebar.markdown("---")
 
     st.sidebar.header("Data Overview")
     df = df.dropna(subset=[c for c in df.columns if c != 'country_code'])

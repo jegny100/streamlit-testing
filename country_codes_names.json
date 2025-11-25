@@ -131,7 +131,7 @@
     },
     {
         "code": "BOL",
-        "name": "Bolivia, Plurinational State of",
+        "name": "Bolivia",
         "eu": false
     },
     {
@@ -256,7 +256,7 @@
     },
     {
         "code": "COD",
-        "name": "Congo, the Democratic Republic of the",
+        "name": "Democratic Republic of the Congo",
         "eu": false
     },
     {
@@ -486,7 +486,7 @@
     },
     {
         "code": "VAT",
-        "name": "Holy See (Vatican City State)",
+        "name": "Vatican City State",
         "eu": false
     },
     {
@@ -521,7 +521,7 @@
     },
     {
         "code": "IRN",
-        "name": "Iran, Islamic Republic of",
+        "name": "Iran",
         "eu": false
     },
     {
@@ -586,12 +586,12 @@
     },
     {
         "code": "PRK",
-        "name": "Korea, Democratic People's Republic of",
+        "name": "North Korea",
         "eu": false
     },
     {
         "code": "KOR",
-        "name": "Korea, Republic of",
+        "name": "South Korea",
         "eu": false
     },
     {
@@ -606,7 +606,7 @@
     },
     {
         "code": "LAO",
-        "name": "Lao People's Democratic Republic",
+        "name": "Laos",
         "eu": false
     },
     {
@@ -656,7 +656,7 @@
     },
     {
         "code": "MKD",
-        "name": "Macedonia, the former Yugoslav Republic of",
+        "name": "North Macedonia",
         "eu": false
     },
     {
@@ -721,12 +721,12 @@
     },
     {
         "code": "FSM",
-        "name": "Micronesia, Federated States of",
+        "name": "Micronesia",
         "eu": false
     },
     {
         "code": "MDA",
-        "name": "Moldova, Republic of",
+        "name": "Moldova",
         "eu": false
     },
     {
@@ -846,7 +846,7 @@
     },
     {
         "code": "PSE",
-        "name": "Palestinian Territory, Occupied",
+        "name": "Palestinian Territories",
         "eu": false
     },
     {
@@ -911,7 +911,7 @@
     },
     {
         "code": "RUS",
-        "name": "Russian Federation",
+        "name": "Russia",
         "eu": false
     },
     {
@@ -1066,7 +1066,7 @@
     },
     {
         "code": "SWZ",
-        "name": "Swaziland",
+        "name": "Eswatini",
         "eu": false
     },
     {
@@ -1081,12 +1081,12 @@
     },
     {
         "code": "SYR",
-        "name": "Syrian Arab Republic",
+        "name": "Syrian",
         "eu": false
     },
     {
         "code": "TWN",
-        "name": "Taiwan, Province of China",
+        "name": "Taiwan",
         "eu": false
     },
     {
@@ -1096,7 +1096,7 @@
     },
     {
         "code": "TZA",
-        "name": "Tanzania, United Republic of",
+        "name": "Tanzania",
         "eu": false
     },
     {
@@ -1201,12 +1201,12 @@
     },
     {
         "code": "VEN",
-        "name": "Venezuela, Bolivarian Republic of",
+        "name": "Venezuela",
         "eu": false
     },
     {
         "code": "VNM",
-        "name": "Viet Nam",
+        "name": "Vietnam",
         "eu": false
     },
     {
