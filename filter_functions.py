@@ -167,42 +167,41 @@ def select_and_filter_countries(
         str(code) for code in df_raw["country_code"].dropna().astype(str).unique().tolist()
     ]
 
-    if countries_lookup is None or countries_lookup.empty:
-        lookup_df = pd.DataFrame(
+    # Build lookup map for name/region, defaulting to "Other" when unknown
+    lookup_df = countries_lookup.copy() if countries_lookup is not None else pd.DataFrame()
+    if lookup_df.empty:
+        lookup_df = pd.DataFrame(columns=["country_code", "country_name", "region"])
+
+    if "region" not in lookup_df.columns:
+        lookup_df["region"] = "Other"
+
+    lookup_df["country_code"] = lookup_df["country_code"].astype(str)
+    lookup_df["country_name"] = lookup_df.get("country_name", lookup_df.get("name", lookup_df["country_code"]))
+    lookup_df["region"] = lookup_df["region"].fillna("Other").astype(str).str.strip()
+
+    lookup_map: Dict[str, Dict[str, str]] = {
+        row["country_code"]: {
+            "country_name": row["country_name"],
+            "region": row["region"],
+        }
+        for _, row in lookup_df.iterrows()
+    }
+
+    available_entries = []
+    for code in available_codes:
+        entry = lookup_map.get(code, {"country_name": code, "region": "Other"})
+        available_entries.append(
             {
-                "country_code": available_codes,
-                "country_name": available_codes,
-                "region": ["Other"] * len(available_codes),
+                "country_code": code,
+                "country_name": entry.get("country_name", code),
+                "region": entry.get("region", "Other"),
             }
         )
-    else:
-        lookup_df = countries_lookup.copy()
-        if "region" not in lookup_df.columns:
-            lookup_df["region"] = "Other"
 
-        lookup_df["country_code"] = lookup_df["country_code"].astype(str)
-        lookup_df["region"] = lookup_df["region"].fillna("Other").astype(str).str.strip()
-        lookup_df = lookup_df[lookup_df["country_code"].isin(available_codes)]
-
-    known_codes = set(lookup_df["country_code"])
-    missing_codes = [code for code in available_codes if code not in known_codes]
-    if missing_codes:
-        lookup_df = pd.concat(
-            [
-                lookup_df,
-                pd.DataFrame(
-                    {
-                        "country_code": missing_codes,
-                        "country_name": missing_codes,
-                        "region": ["Other"] * len(missing_codes),
-                    }
-                ),
-            ],
-            ignore_index=True,
-        )
+    available_lookup_df = pd.DataFrame(available_entries)
 
     region_to_countries: Dict[str, List[Dict[str, str]]] = {}
-    for region, subset in lookup_df.groupby("region"):
+    for region, subset in available_lookup_df.groupby("region"):
         sorted_subset = subset.sort_values("country_name")
         region_to_countries[region] = sorted_subset.to_dict("records")
 
@@ -275,8 +274,6 @@ def select_and_filter_countries(
             st.rerun()
 
         if col_cancel.button("Cancel", key="cancel_countries"):
-            for code, selected in st.session_state["selected_countries"].items():
-                st.session_state[f"country_sel_{code}"] = selected
             st.session_state["show_countries_modal"] = False
             st.rerun()
 
