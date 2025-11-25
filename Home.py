@@ -243,8 +243,6 @@ def run_dynamic_ahp(json_path: str, data_path: str, country_json_path: str) -> N
     if st.sidebar.button("Select criteria", key="open_criteria_modal"):
         st.session_state["show_criteria_modal"] = True
 
-    if st.sidebar.button("Select countries", key="open_countries_modal"):
-        st.session_state["show_countries_modal"] = True
 
     # --- Criteria selection and filtering ---
     selected_codes, df = select_and_filter_criteria(df, hierarchy)
