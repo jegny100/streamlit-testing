@@ -181,6 +181,7 @@ def select_and_filter_countries(
             lookup_df["region"] = "Other"
 
         lookup_df["country_code"] = lookup_df["country_code"].astype(str)
+        lookup_df["region"] = lookup_df["region"].fillna("Other").astype(str).str.strip()
         lookup_df = lookup_df[lookup_df["country_code"].isin(available_codes)]
 
     known_codes = set(lookup_df["country_code"])
@@ -229,32 +230,31 @@ def select_and_filter_countries(
         for region in sorted_regions:
             countries = region_to_countries.get(region, [])
             region_codes = [c["country_code"] for c in countries]
-            region_key = f"region_sel_{region}"
+            region_key = f"region_sel_{region}".replace(" ", "_")
 
             for code in region_codes:
                 country_key = f"country_sel_{code}"
                 if country_key not in st.session_state:
                     st.session_state[country_key] = st.session_state["selected_countries"].get(code, True)
 
-            current_region_selected = all(
-                st.session_state.get(f"country_sel_{code}", True) for code in region_codes
-            )
+            selected_count = sum(st.session_state.get(f"country_sel_{c}", True) for c in region_codes)
+            region_default_checked = selected_count == len(region_codes)
 
             if region_key not in st.session_state:
-                st.session_state[region_key] = current_region_selected
+                st.session_state[region_key] = region_default_checked
 
-            expander_label = f"{region} ({sum(st.session_state.get(f'country_sel_{c}', True) for c in region_codes)}/{len(region_codes)})"
+            expander_label = f"{region} ({selected_count}/{len(region_codes)})"
             with st.expander(expander_label, expanded=False):
                 region_checked = st.checkbox(
                     "Select entire region",
                     key=region_key,
-                    value=current_region_selected,
+                    value=region_default_checked,
                 )
 
-                if region_checked != current_region_selected:
+                # If region checkbox toggled, propagate to all countries in that region
+                if region_checked != region_default_checked:
                     for code in region_codes:
                         st.session_state[f"country_sel_{code}"] = region_checked
-                    current_region_selected = region_checked
 
                 for country in countries:
                     code = country["country_code"]
@@ -264,11 +264,8 @@ def select_and_filter_countries(
                         f"{name} ({code})",
                         key=country_key,
                     )
-
-                st.session_state[region_key] = all(
-                    st.session_state.get(f"country_sel_{code}", False)
-                    for code in region_codes
-                )
+                # Update the expander label counter by recalculating selected_count
+                selected_count = sum(st.session_state.get(f"country_sel_{c}", False) for c in region_codes)
 
         col_apply, col_cancel = st.columns([1, 1])
         if col_apply.button("Apply", key="apply_countries"):
