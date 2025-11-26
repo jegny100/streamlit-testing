@@ -19,7 +19,7 @@ st.set_page_config(
 # ------------------------------
 # 1) Load and parse AHP hierarchy
 # ------------------------------
-@st.cache_data(show_spinner=False)
+#@st.cache_data(show_spinner=False)
 def load_hierarchy(json_path: str) -> Dict[str, Any]:
     """Load the hierarchy JSON file. """
     try:
@@ -168,7 +168,7 @@ def load_dataframe(path: str) -> pd.DataFrame:
     return pd.read_excel(path)
 
 
-@st.cache_data(show_spinner=False)
+#@st.cache_data(show_spinner=False)
 def load_countries_lookup(country_json_path: str) -> pd.DataFrame:
     """Load the country code --> name mapping from JSON into a DataFrame."""
     try:

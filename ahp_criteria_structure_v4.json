@@ -18,6 +18,14 @@
         "source_short": "RISE",
         "source_long": "Energy Sector Management Assistance Program (ESMAP). 2025. Regulatory Indicators for Sustainable Energy (RISE). Washington, DC: World Bank.",
         "year": 2024
+      },
+      {
+        "label": "Hydrogen Projects",
+        "code": "hydrogen projects"
+      },
+      {
+        "label": "Hydrogen Infrastructure",
+        "code": "hydrogen infrastructure"
       }
     ]
   },
