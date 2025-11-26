@@ -2,14 +2,36 @@
   "top": {
     "label": "Sustainability Pillars",
     "sublevels": [
+      "hydrogen",
       "environmental",
       "economic",
-      "social",
-      "hydrogen"
+      "social"
     ]
   },
   "hydrogen": {
     "label": "Hydrogen",
+    "criteria": [
+    
+      {
+        "label": "Hydrogen Infrastructure",
+        "code": "hydrogen infrastructure",
+        "description": "Represents the extent and development of hydrogen-related infrastructure in a country, including pipelines, blending, storage, and port facilities.",
+        "source_short": "International Energy Agency (IEA)",
+        "source_long": "International Energy Agency (IEA), Hydrogen Infrastructure Database, updated August 2025.",
+        "year": 2025
+      },
+      {
+        "label": "Hydrogen Production Projects",
+        "code": "hydrogen projects",
+        "description": "Represents the normalized, weighted capacity of hydrogen projects in a country, accounting for both project size and development stage. Higher values indicate a larger portfolio of projects that are operational and closer to operational, reflecting stronger hydrogen project activity.",
+        "source_short": "International Energy Agency (IEA)",
+        "year": 2025
+      }
+
+    ]
+  },
+  "environmental": {
+    "label": "Environmental",
     "criteria": [
       {
         "label": "Renewable Energy Policy Readiness",
@@ -19,19 +41,6 @@
         "source_long": "Energy Sector Management Assistance Program (ESMAP). 2025. Regulatory Indicators for Sustainable Energy (RISE). Washington, DC: World Bank.",
         "year": 2024
       },
-      {
-        "label": "Hydrogen Projects",
-        "code": "hydrogen projects"
-      },
-      {
-        "label": "Hydrogen Infrastructure",
-        "code": "hydrogen infrastructure"
-      }
-    ]
-  },
-  "environmental": {
-    "label": "Environmental",
-    "criteria": [
       {
         "label": "Environmental Performance",
         "code": "environmental_performance",
@@ -67,11 +76,18 @@
       },
       {
         "label": "Trade Freedom",
-        "code": "trade freedom"
+        "code": "trade freedom",
+        "description":"Measures how freely individuals and businesses can engage in international trade. Higher values indicate fewer government restrictions and easier access to global markets.",
+        "year":2024,
+        "source_short":"The Heritage Foundation",
+        "source_long":"The Heritage Foundation, 2024 dataset, Trade Freedom"
       },
       {
         "label": "Electricity Affordability",
-        "code": "electricity price"
+        "code": "electricity price",
+        "description": "Represents a normalized benefit score based on the average household electricity tariff in each country, as reported by Cable.co.uk’s global electricity pricing study. Lower underlying electricity prices translate into higher affordability scores.",
+        "year": 2021,
+        "source_short":"Best Broadband Deals"
       },
       {
         "label": "Logistics cost",
@@ -86,7 +102,11 @@
       },
       {
         "label": "Favourable tax",
-        "code": "tax burden"
+        "code": "tax burden",
+        "year":2024,
+        "description":"Reflects the extent to which individuals and businesses can retain and use their income and wealth. Higher values indicate lower overall tax burdens, supporting greater economic freedom and incentives for productive activity.",
+        "source_short":"The Heritage Foundation",
+        "source_long":"The Heritage Foundation, 2024 dataset, Tax Burden"
       },
       {
         "label": "Exchange rate",
@@ -140,7 +160,11 @@
       },
       {
         "label": "Government integrity",
-        "code": "government integrity"
+        "code": "government integrity",
+        "description":"Assesses the degree to which government functions without corruption such as bribery, favoritism, or misuse of authority. Higher scores represent more trustworthy, fair, and transparent governance.",
+        "year":2024,
+        "source_short":"The Heritage Foundation",
+        "source_long":"The Heritage Foundation, 2024 dataset, Government Integrity"
       }
     ]
   }
