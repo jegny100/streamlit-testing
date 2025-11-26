@@ -112,6 +112,9 @@ Results depend strongly on:
 st.markdown("---")
 st.header("Imprint / Legal Notice")
 
+st.image("image.png")
+st.markdown("**Fkz. 03HY102C**")
+
 st.markdown("""
 **Location Selection Tool**  
 Developed within an academic research context at  
@@ -122,9 +125,6 @@ Rhine-Waal University of Applied Sciences
 Marie-Curie-Straße 1  
 47533 Kleve  
 Germany  
-
-**Contact:**  
-https://www.hochschule-rhein-waal.de
 
 This tool is a research prototype.  
 All data used is openly licensed and provided “as is” without warranty.
